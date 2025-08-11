@@ -36,14 +36,21 @@
         <div class="relative w-full" style="padding-top:56.25%;">
           <iframe
             class="absolute inset-0 w-full h-full rounded"
-            src="https://docs.google.com/presentation/d/1AQPlUCdnphwbbTX2haneSQ1wg3eqBmAk/embed?start=false&loop=false&delayms=3000&slide=id.p11"
+            src="https://docs.google.com/presentation/d/1AQPlUCdnphwbbTX2haneSQ1wg3eqBmAk/embed?start=false&loop=false&delayms=3000&slide=id.p1"
             title="Google Slides - Programa MACI, Componente 3"
             frameborder="0"
             allowfullscreen
             referrerpolicy="strict-origin-when-cross-origin"
           ></iframe>
         </div>
-        <p class="text-xs text-gray-500 mt-2">Usa el botón de pantalla completa del visor para ampliar la presentación.</p>
+        <p class="text-xs text-gray-500 mt-2">
+          Usa el botón de pantalla completa del visor para ampliar la presentación.
+          &nbsp;|&nbsp;
+          <a class="underline text-[var(--blue)]" target="_blank" rel="noopener"
+             href="https://docs.google.com/presentation/d/1AQPlUCdnphwbbTX2haneSQ1wg3eqBmAk/edit?slide=id.p1#slide=id.p1">
+            Abrir en modo edición (nueva pestaña)
+          </a>
+        </p>
       </div>
     </section>
     <!-- *** FIN NUEVA SECCIÓN *** -->
@@ -284,19 +291,16 @@
     }
 
     function compute5y(){
-      // presupuesto base por año con factores; si addOverhead, lo sumamos como 10% del base cada año
       const baseSeries = factors.map(f=> year1 * f);
       if (!addOverhead) return baseSeries;
       return baseSeries.map(v => v * 1.10); // sumar 10%
     }
 
     function render(){
-      // Texto Total Año 1
       const baseY1 = year1;
       const totalY1 = addOverhead ? baseY1 * 1.10 : baseY1;
       qs('#y1total').textContent = fmt(totalY1, currency, trm);
 
-      // Donut
       const bd = getBreakdown();
       const dataVals = bd.valuesUSD.map(v => currency==='USD'?v:v*trm);
       const donutData = { labels: bd.labels, datasets:[{ data: dataVals, backgroundColor: bd.colors, borderColor:'#f8f9fa', borderWidth:2 }] };
@@ -304,7 +308,6 @@
       if (donut) donut.destroy();
       donut = new Chart(donutCtx, { type:'doughnut', data:donutData, options:sharedOpts });
 
-      // Línea 5 años
       const y = compute5y().map(v => currency==='USD'?v:v*trm);
       const lineData = { labels:['Año 1','Año 2','Año 3','Año 4','Año 5'], datasets:[{ label:'Presupuesto anual', data:y, fill:false, borderWidth:3, tension:.25 }] };
       const lineOpts = { ...sharedOpts, plugins:{...sharedOpts.plugins, legend:{display:false}}, scales:{ x:{ grid:{display:false}, ticks:{color:'#374151'} }, y:{ grid:{color:'#E5E7EB'}, ticks:{ color:'#374151', callback:(v)=> currency==='USD'?('$'+(v/1e6).toFixed(1)+' M') : ((v/1e9).toFixed(1)+' mil M') } } } };
